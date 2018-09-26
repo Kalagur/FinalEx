@@ -93,7 +93,7 @@
                     Введите желаемую сумму:
                     <input type="text" class="form-control" name="sum"
                            placeholder="Сумма перевода в ₽">
-                    Время перевода:
+                    Время перевода (часовой пояс - Кемерово):
                     <input type="datetime-local" class="form-control"
                            name="trans_date"><br>
                     <input type="hidden" name="status" value="pending">
