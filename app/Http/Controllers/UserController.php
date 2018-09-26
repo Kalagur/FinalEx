@@ -52,6 +52,14 @@ class UserController extends BaseController
 
             ]);
 
+            if (!User::find($request->trans_from)) {
+                return redirect('/')->with('status', 'Id отправителя не верный');
+            }
+
+            if (!User::find($request->trans_to)) {
+                return redirect('/')->with('status', 'Id получателя не верный');
+            }
+
             if ($validator->fails()) {
                 return redirect('/user?id='.$select_from[0]->id)
                     ->withInput()

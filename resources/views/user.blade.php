@@ -79,8 +79,10 @@
         <div class="row justify-content-center">
             <div class="col-4 text-left">
                 <div class="text-center"><a href="/">На главную</a><br>
-                    Текщий пользователь: <span class="text-success">{{ $current[0]->name }}</span><br>
-                    Текущий баланс: <span class="text-danger strong">{{ $current[0]->balance }} ₽</span><br><br>
+                    Текщий пользователь: <span class="text-success">
+                        {{ $current[0]->name }}</span><br>
+                    Текущий баланс: <span class="text-danger strong">
+                        {{ $current[0]->balance }} ₽</span><br><br>
                 </div>
                 Кому будем переводить деньги?<br>
                 <form method="post" action="{{ route('pay') }}">
@@ -92,10 +94,10 @@
                     </select>
                     Введите желаемую сумму:
                     <input type="text" class="form-control" name="sum"
-                           placeholder="Сумма перевода в ₽">
+                           placeholder="Сумма перевода в ₽" pattern="[0-9]{1,10}" min="1" required>
                     Время перевода (часовой пояс - Кемерово):
                     <input type="datetime-local" class="form-control"
-                           name="trans_date"><br>
+                           name="trans_date" required><br>
                     <input type="hidden" name="status" value="pending">
                     <input type="hidden" name="trans_from"
                            value="{{ $current[0]->id }}">
