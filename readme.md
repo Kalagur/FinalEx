@@ -42,6 +42,16 @@
 9. Накатить миграции и сиды (создание таблиц в БД и заполнение тестовыми данными)
     ```
     docker-compose exec app php artisan migrate --seed
-    ```       
+    ``` 
+10. Для работы отложенных переводов выполнить команду
+    ```
+    crontab -e
+    ```  
+11. В конец файла добавить данную строку
+    ```
+    * * * * * docker exec finalex_app_1 php artisan schedule:run >> /dev/null 2>&1
+    ```    
+      
+          
 
 
