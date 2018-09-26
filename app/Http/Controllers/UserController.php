@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Transaction;
 use App\User;
+use Validator;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -11,18 +12,16 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use DB;
-use Validator;
-
 
 class UserController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function getUsers()
+    public function getUsers(Request $request)
     {
-        $user = $_GET['id'];
-        $current = DB::select("SELECT * FROM users WHERE id = '$user'");
-        $not_current = DB::select("SELECT * FROM users WHERE id != '$user'");
+        $user = $request->input('id');
+        $current = User::where('id', $user)->get();
+        $not_current = User::where('id', '!=', $user)->get();
 
         return view('user', [
             'user' => $user,
@@ -31,22 +30,20 @@ class UserController extends BaseController
         ]);
     }
 
-
-
     public function transaction(Request $request)
     {
-        if($request->isMethod('post')) {
 
+        if ($request->isMethod('post')) {
             $input = $request->except('_token');
 
             $sum = $request->input('sum');
             $user_from = $request->input('trans_from');
             $user_to = $request->input('trans_to');
 
-            $select_from = DB::select("SELECT * FROM users WHERE id = '$user_from'");
-            $select_to = DB::select("SELECT * FROM users WHERE id = '$user_to'");
-            $last_transactions = Transaction::where([ ['trans_from',$user_from],['status', 'pending']])->sum('sum');
-//            dd($last_transactions);
+            $select_from = User::where('id', $user_from)->get();
+            $select_to = User::where('id', $user_to)->get();
+            $last_transactions = Transaction::where([ ['trans_from',$user_from],
+                ['status', 'pending']])->sum('sum');
 
 
             $validator = Validator::make($request->all(), [
@@ -62,7 +59,6 @@ class UserController extends BaseController
             }
 
             if ($select_from[0]->balance - $last_transactions - $sum >= 0) {
-
                 $transaction = new Transaction();
                 $transaction->fill($input);
 

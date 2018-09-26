@@ -34,8 +34,12 @@ class Kernel extends ConsoleKernel
                 $transaction->status = 'closed';
                 $transaction->save();
 
-                DB::statement("UPDATE `users` SET `balance` = `balance` - $transaction->sum WHERE `id` = $transaction->trans_from");
-                DB::statement("UPDATE `users` SET `balance` = `balance` + $transaction->sum WHERE `id` = $transaction->trans_to");
+                DB::statement("UPDATE `users` 
+                                SET `balance` = `balance` - $transaction->sum 
+                                WHERE `id` = $transaction->trans_from");
+                DB::statement("UPDATE `users` 
+                                SET `balance` = `balance` + $transaction->sum 
+                                WHERE `id` = $transaction->trans_to");
             }
         })->everyMinute();
     }
