@@ -2,8 +2,12 @@
 
 namespace App\Console;
 
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\User;
+use App\Transaction;
+use DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,8 +28,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->call(function () {
+            $transactions = Transaction::where('trans_date', '<', Carbon::now())->where('status', 'pending')->get();
+            foreach ($transactions as $transaction) {
+                $transaction->status = 'closed';
+                $transaction->save();
+
+                DB::statement("UPDATE `users` SET `balance` = `balance` - $transaction->sum WHERE `id` = $transaction->trans_from");
+                DB::statement("UPDATE `users` SET `balance` = `balance` + $transaction->sum WHERE `id` = $transaction->trans_to");
+            }
+        })->everyMinute();
     }
 
     /**

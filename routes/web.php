@@ -11,6 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'Controller@index');
+Route::get('user', 'UserController@getUsers');
+
+Route::post('user', 'UserController@transaction')->name('pay');
